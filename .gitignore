@@ -1,0 +1,54 @@
+# Based on GitHub's Objective-C .gitignore template https://github.com/github/gitignore/blob/master/Objective-C.gitignore
+# See also http://stackoverflow.com/questions/49478/git-ignore-file-for-xcode-projects
+
+#
+# General OSX artifacts
+#
+.DS_Store
+.Trashes
+
+#
+# Build products
+#
+build/
+DerivedData
+*.ipa
+
+#
+# User-specific data, including preferences and settings
+# (default versions whitelisted)
+#
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xcuserstate
+
+#
+# Version-control metadata
+#
+*.xccheckout
+
+#
+# Files Xcode moves aside when you opt to overwrite with new version, e.g. Core Data generated classes
+# (may be specific to some versions of Xcode)
+#
+*.moved-aside
+
+#
+# Header-map files
+# https://developer.apple.com/library/mac/documentation/DeveloperTools/Reference/XcodeBuildSettingRef/1-Build_Setting_Reference/build_setting_ref.html#//apple_ref/doc/uid/TP40003931-CH3-SW158
+#
+*.hmap
+
+#
+# CocoaPods
+# The official CocoaPods recommendation is not to ignore the Pods directory. They lay out the pros and cons here:
+# http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
+#
+Pods/
