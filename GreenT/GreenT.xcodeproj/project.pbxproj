@@ -14,6 +14,7 @@
 		399340051A462598008E701A /* GreenTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399340041A462598008E701A /* GreenTTests.swift */; };
 		3993400F1A4627A5008E701A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3993400E1A4627A5008E701A /* MapKit.framework */; };
 		399340141A4644C8008E701A /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399340131A4644C8008E701A /* MapController.swift */; };
+		399340181A464E19008E701A /* MbtaApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399340171A464E19008E701A /* MbtaApi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		399340041A462598008E701A /* GreenTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenTTests.swift; sourceTree = "<group>"; };
 		3993400E1A4627A5008E701A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		399340131A4644C8008E701A /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
+		399340171A464E19008E701A /* MbtaApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MbtaApi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				399340151A4644FF008E701A /* App */,
+				399340161A464D82008E701A /* MBTA API */,
 				399340121A46446B008E701A /* Map */,
 				39933FF21A462597008E701A /* Main.storyboard */,
 				39933FF51A462597008E701A /* Images.xcassets */,
@@ -130,6 +133,14 @@
 				39933FEE1A462597008E701A /* AppDelegate.swift */,
 			);
 			name = App;
+			sourceTree = "<group>";
+		};
+		399340161A464D82008E701A /* MBTA API */ = {
+			isa = PBXGroup;
+			children = (
+				399340171A464E19008E701A /* MbtaApi.swift */,
+			);
+			name = "MBTA API";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -237,6 +248,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				399340181A464E19008E701A /* MbtaApi.swift in Sources */,
 				399340141A4644C8008E701A /* MapController.swift in Sources */,
 				39933FEF1A462597008E701A /* AppDelegate.swift in Sources */,
 			);

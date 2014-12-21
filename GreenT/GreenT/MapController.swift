@@ -8,17 +8,36 @@
 
 import UIKit
 
-class MapController: UIViewController {
+import CoreLocation
+import MapKit
 
+class MapController: UIViewController {
+    
+    @IBOutlet var mapView: MKMapView?
+
+    required init(coder: NSCoder)
+    {
+        super.init(coder: coder)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        let data = MbtaApi.predictionsByRoutes(["810_", "813_", "823_"])
+        println(data!.debugDescription)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        let center = CLLocationCoordinate2D(latitude: 42.336403, longitude: -71.151901)
+        let span = MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
+        let startingRegion = MKCoordinateRegion(center: center, span: span)
+        
+        mapView!.setRegion(startingRegion, animated: true)
     }
     
 
