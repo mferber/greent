@@ -33,8 +33,8 @@ class MapController: UIViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        let center = CLLocationCoordinate2D(latitude: 42.336403, longitude: -71.151901)
-        let span = MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
+        let center = CLLocationCoordinate2D(latitude: 42.350570, longitude: -71.130660)
+        let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         let startingRegion = MKCoordinateRegion(center: center, span: span)
         
         mapView!.setRegion(startingRegion, animated: true)
