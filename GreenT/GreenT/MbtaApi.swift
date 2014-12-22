@@ -7,17 +7,102 @@
 //
 
 import Foundation
+import MapKit
 
 class MbtaApi {
     
-    private struct Private {
-        static var baseUrl: NSURL! = NSURL(string: "http://realtime.mbta.com/developer/api/v2/")
-        static var apiKey = "_eE_PLk80kuL1No3kuSazg"
+    // MARK: - Types
+    
+    enum Direction: Printable {
+        case None
+        case Northbound
+        case Eastbound
+        case Southbound
+        case Westbound
+        
+        var description: String {
+            get {
+                switch(self) {
+                case None:
+                    return "None"
+                case .Northbound:
+                    return "Northbound"
+                case .Eastbound:
+                    return "Eastbound"
+                case .Southbound:
+                    return "Southbound"
+                case .Westbound:
+                    return "Westbound"
+                }
+            }
+        }
+
+        static func forGreenLineDirectionId(id: Int) -> Direction {
+            return (id == 0 ? Westbound : id == 1 ? Eastbound : None)
+        }
     }
     
-    class func predictionsByRoutes(routes: [String]) -> [String: AnyObject]? {
-        return getJSONDictionary("predictionsbyroutes", params:["routes": ",".join(routes)])
+    struct TrainStatus: Printable {
+        let vehicleId: Int
+        let headsign: String
+        let tripName: String
+        let direction: Direction
+        let location: CLLocationCoordinate2D
+        
+        var description: String {
+            get {
+                return "Train-\(vehicleId) \(direction) [\(tripName): \"\(headsign)\"] (\(location.latitude), \(location.longitude)))"
+            }
+        }
     }
+    
+    // MARK: - High-level API
+    
+    class func greenLineBTrainStatuses() -> [TrainStatus]? {
+        if let data = vehiclesByRoutes(["810_", "813_", "823_"]) {
+            var statuses = [TrainStatus]()
+            
+            for mode in data["mode"]! as [[String: AnyObject]] {
+                for route in mode["route"]! as [[String: AnyObject]] {
+                    for direction in route["direction"]! as [[String: AnyObject]] {
+                        let directionIdStr = direction["direction_id"]! as String
+                        let directionEnum = Direction.forGreenLineDirectionId(directionIdStr.toInt()!)
+                        
+                        for trip in direction["trip"]! as [[String: AnyObject]] {
+                            let headsign = trip["trip_headsign"]! as String
+                            let trip_name = trip["trip_name"]! as String
+                            
+                            let vehicle = trip["vehicle"]! as [String: AnyObject]
+                            let vehicleId = (vehicle["vehicle_id"]! as String).toInt()!
+                            let lat = (vehicle["vehicle_lat"]! as NSString).doubleValue
+                            let long = (vehicle["vehicle_lon"]! as NSString).doubleValue
+                            
+                            statuses.append(TrainStatus(vehicleId: vehicleId, headsign: headsign, tripName: trip_name,
+                                direction: directionEnum, location: CLLocationCoordinate2D(latitude: lat,
+                                    longitude: long)))
+                        }
+                    }
+                }
+            }
+            
+            return statuses
+        }
+        return nil;
+    }
+    
+    
+    // MARK: - Low-level API (wrappers for published API)
+    
+    class func vehiclesByRoutes(routes: [String]) -> [String: AnyObject]? {
+        let rawData: Dictionary? = getJSONDictionary("vehiclesbyroutes", params:["routes": ",".join(routes)])
+        if rawData == nil {
+            println("vehiclesbyroutes: No data retrieved from MBTA API")
+        }
+        return rawData;
+    }
+    
+    
+    // MARK: - URI requests
     
     class func getJSONDictionary(url: NSURL) -> [String: AnyObject]? {
         let request = NSURLRequest(URL: url)
@@ -26,6 +111,8 @@ class MbtaApi {
         let dataOpt: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error: &error)
         
         if let data = dataOpt {
+//            println(NSString(data:data, encoding: NSASCIIStringEncoding))
+            
             var error: NSError?
             let jsonObj: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error)
             if let dict = jsonObj as? [String: AnyObject] {
@@ -54,12 +141,19 @@ class MbtaApi {
         
         let urlOpt = NSURL(string: relativeUrl, relativeToURL: Private.baseUrl)
         if let url = urlOpt {
-            println(url)
             return getJSONDictionary(url)
         }
         else {
             println("Couldn't form full URL from relative URL: \(relativeUrl)")
             return nil;
         }
+    }
+    
+    
+    // MARK: - Private settings
+    
+    private struct Private {
+        static var baseUrl: NSURL! = NSURL(string: "http://realtime.mbta.com/developer/api/v2/")
+        static var apiKey = "_eE_PLk80kuL1No3kuSazg"
     }
 }

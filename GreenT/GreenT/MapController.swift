@@ -11,9 +11,9 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class MapController: UIViewController {
+class MapController: UIViewController, MKMapViewDelegate {
     
-    @IBOutlet var mapView: MKMapView?
+    @IBOutlet var mapView: MKMapView!
 
     required init(coder: NSCoder)
     {
@@ -23,8 +23,16 @@ class MapController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let data = MbtaApi.predictionsByRoutes(["810_", "813_", "823_"])
-        println(data!.debugDescription)
+        let statuses = MbtaApi.greenLineBTrainStatuses()
+        if let statusesReal = statuses {
+            for status in statusesReal {
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = status.location
+                annotation.title = status.headsign
+                annotation.subtitle = status.tripName
+                self.mapView.addAnnotation(annotation)
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -41,14 +49,9 @@ class MapController: UIViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+// MARK: - <MKMapViewDelegate>
+    
+//    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+//        <#code#>
+//    }
 }
