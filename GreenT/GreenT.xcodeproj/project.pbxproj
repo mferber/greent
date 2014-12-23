@@ -95,10 +95,8 @@
 			children = (
 				399340151A4644FF008E701A /* App */,
 				39933FF51A462597008E701A /* Images.xcassets */,
-				39933FF71A462597008E701A /* LaunchScreen.xib */,
-				39933FF21A462597008E701A /* Main.storyboard */,
-				399340121A46446B008E701A /* Map */,
 				399340161A464D82008E701A /* MBTA API */,
+				399340121A46446B008E701A /* Controllers & views */,
 				39102BD21A48A11000A4B20C /* Resources */,
 				39933FEC1A462597008E701A /* Supporting Files */,
 			);
@@ -108,6 +106,7 @@
 		39933FEC1A462597008E701A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				39933FF71A462597008E701A /* LaunchScreen.xib */,
 				39933FED1A462597008E701A /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -130,12 +129,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		399340121A46446B008E701A /* Map */ = {
+		399340121A46446B008E701A /* Controllers & views */ = {
 			isa = PBXGroup;
 			children = (
+				39933FF21A462597008E701A /* Main.storyboard */,
 				399340131A4644C8008E701A /* MapController.swift */,
 			);
-			name = Map;
+			name = "Controllers & views";
 			sourceTree = "<group>";
 		};
 		399340151A4644FF008E701A /* App */ = {
