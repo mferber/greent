@@ -13,8 +13,13 @@ import MapKit
 
 class MapController: UIViewController, MKMapViewDelegate {
     
+// MARK: - Properties
+    
     @IBOutlet var mapView: MKMapView!
 
+    
+// MARK: - Initialization & lifecycle
+    
     required init(coder: NSCoder)
     {
         super.init(coder: coder)
@@ -28,10 +33,8 @@ class MapController: UIViewController, MKMapViewDelegate {
         let statuses = MbtaApi.greenLineBTrainStatuses()
         if let statusesReal = statuses {
             for status in statusesReal {
-                let annotation = MKPointAnnotation()
-                annotation.coordinate = status.location
-                annotation.title = status.headsign
-                annotation.subtitle = status.tripName
+                let annotation = GreenLineTrainMapAnnotation(coordinate: status.location, direction: status.direction,
+                    title: status.headsign, subtitle: status.tripName)
                 self.mapView.addAnnotation(annotation)
             }
         }
@@ -49,6 +52,9 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         mapView!.setRegion(startingRegion, animated: false)
     }
+
+
+// MARK: - Helpers
     
     func placeGreenLineOverlay() {
         let routeFileUrl: NSURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("greenline_b_aboveground_route", ofType: "csv")!)!
@@ -75,9 +81,16 @@ class MapController: UIViewController, MKMapViewDelegate {
 
 // MARK: - <MKMapViewDelegate>
     
-//    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-//        <#code#>
-//    }
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        let greenLineAnnotation = annotation as GreenLineTrainMapAnnotation
+        
+        var view = mapView.dequeueReusableAnnotationViewWithIdentifier(Settings.reuseIdentifier)
+        if (view != nil) {
+            return view
+        }
+        
+        return GreenLineTrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
+    }
     
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
         if overlay is MKPolyline {
@@ -88,5 +101,61 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
         return nil
 
+    }
+
+// MARK: - Annotation classes
+    
+    class GreenLineTrainMapAnnotation: NSObject, MKAnnotation {
+        
+        var coordinate: CLLocationCoordinate2D
+        var direction: MbtaApi.Direction
+        var title: String?
+        var subtitle: String?
+        
+        init(coordinate: CLLocationCoordinate2D, direction: MbtaApi.Direction, title: String?, subtitle: String?) {
+            self.coordinate = coordinate
+            self.direction = direction
+            self.title = title
+        }
+
+        // Called as a result of dragging an annotation view.
+        // func setCoordinate(newCoordinate: CLLocationCoordinate2D)
+    }
+    
+    class GreenLineTrainMapAnnotationView: MKAnnotationView {
+
+        required init(coder: NSCoder) {
+            super.init(coder: coder)
+        }
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+        }
+        
+        override init(annotation: MKAnnotation, reuseIdentifier: String) {
+            super.init(annotation: annotation, reuseIdentifier: Settings.reuseIdentifier)
+            
+            let greenLineAnnotation = annotation as GreenLineTrainMapAnnotation
+            var imageName: String?
+            
+            switch (greenLineAnnotation.direction) {
+            case .Eastbound:
+                imageName = "greenEastbound"
+                centerOffset = CGPoint(x: CGFloat(10), y: CGFloat(10))
+            case .Westbound:
+                imageName = "greenWestbound"
+                centerOffset = CGPoint(x: CGFloat(-10), y: CGFloat(-10))
+            default:
+                imageName = nil
+            }
+            
+            if (imageName != nil) {
+                image = UIImage(named: imageName!)
+            }
+        }
+    }
+    
+    private struct Settings {
+        static let reuseIdentifier = "GreenLineTrainLocation"
     }
 }
