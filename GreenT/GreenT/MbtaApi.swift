@@ -153,7 +153,7 @@ class MbtaApi {
     // MARK: - Private settings
     
     private struct Private {
-        static var baseUrl: NSURL! = NSURL(string: "http://realtime.mbta.com/developer/api/v2/")
-        static var apiKey = "_eE_PLk80kuL1No3kuSazg"
+        static let baseUrl: NSURL! = NSURL(string: "http://realtime.mbta.com/developer/api/v2/")
+        static let apiKey = "_eE_PLk80kuL1No3kuSazg"
     }
 }
