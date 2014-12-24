@@ -17,6 +17,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet var mapView: MKMapView!
     
+    private var trainAnnotations = [Int: TrainMapAnnotation]()
+    
     private var timer: NSTimer?
 
     
@@ -88,15 +90,43 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     func updateTrains() {
         if let statuses = MbtaApi.greenLineBTrainStatuses() {
+
+            // flag all trains for removal unless we see them in the updated data
             for annotation in mapView.annotations {
                 if let trainAnnotation = annotation as? TrainMapAnnotation {
-                    mapView.removeAnnotation(trainAnnotation)
+                    trainAnnotation.toBeRemoved = true
                 }
             }
             
             for status in statuses {
-                let annotation = TrainMapAnnotation(trainStatus: status)
-                mapView.addAnnotation(annotation)
+                if let trainAnnotation = trainAnnotations[status.vehicleId] {
+//                    NSLog("Moving \(status.vehicleId) from (\(trainAnnotation.coordinate.latitude as Double), " +
+//                        "\(trainAnnotation.coordinate.longitude as Double)) to (\(status.location.latitude as Double), " +
+//                        "\(status.location.longitude as Double))")
+                    
+                    trainAnnotation.toBeRemoved = false
+                    
+                    UIView.animateWithDuration(1.0, animations: { () -> Void in
+                        trainAnnotation.coordinate = status.location
+                    })
+                }
+                else {
+//                    NSLog("Adding \(status.vehicleId)")
+                    let annotation = TrainMapAnnotation(trainStatus: status)
+                    mapView.addAnnotation(annotation)
+                    
+                    trainAnnotations[status.vehicleId] = annotation
+                }
+            }
+            
+            // remove trains that no longer exist
+            for annotation in mapView.annotations {
+                if let trainAnnotation = annotation as? TrainMapAnnotation {
+                    if trainAnnotation.toBeRemoved {
+//                        NSLog("Removing \(trainAnnotation.subtitle)")
+                        mapView.removeAnnotation(trainAnnotation)
+                    }
+                }
             }
         }
         
@@ -117,7 +147,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     class TrainMapAnnotation: NSObject, MKAnnotation {
         
-        var coordinate: CLLocationCoordinate2D      // FIXME: MUST observe KVO, per protocol docs!
+        dynamic var coordinate: CLLocationCoordinate2D      // dynamic enables KVO
         private(set) var direction: MbtaApi.Direction
         private(set) var title: String!
         private(set) var subtitle: String!
