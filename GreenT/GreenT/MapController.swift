@@ -186,7 +186,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
         
         override init(annotation: MKAnnotation, reuseIdentifier: String) {
-            super.init(annotation: annotation, reuseIdentifier: Settings.reuseIdentifier)
+            super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
             
             canShowCallout = true
         }
@@ -222,7 +222,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
 
         override init(annotation: MKAnnotation, reuseIdentifier: String) {
-            super.init(annotation: annotation, reuseIdentifier: Settings.reuseIdentifier)
+            super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
             
             canShowCallout = true
             image = UIImage(named: "station")
