@@ -74,11 +74,10 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     func updateTrains() {
-        let statuses = MbtaApi.greenLineBTrainStatuses()
-        if let statusesReal = statuses {
+        if let statuses = MbtaApi.greenLineBTrainStatuses() {
             mapView.removeAnnotations(mapView.annotations)
             
-            for status in statusesReal {
+            for status in statuses {
                 let annotation = GreenLineTrainMapAnnotation(coordinate: status.location, direction: status.direction,
                     title: status.headsign, subtitle: "(" + String(status.vehicleId) + ") " + status.tripName)
                 self.mapView.addAnnotation(annotation)
