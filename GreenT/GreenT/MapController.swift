@@ -95,9 +95,8 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
             
             for status in statuses {
-                let annotation = TrainMapAnnotation(coordinate: status.location, direction: status.direction,
-                    title: status.headsign, subtitle: "(" + String(status.vehicleId) + ") " + status.tripName)
-                self.mapView.addAnnotation(annotation)
+                let annotation = TrainMapAnnotation(trainStatus: status)
+                mapView.addAnnotation(annotation)
             }
         }
         
@@ -122,16 +121,15 @@ class MapController: UIViewController, MKMapViewDelegate {
         private(set) var direction: MbtaApi.Direction
         private(set) var title: String!
         private(set) var subtitle: String!
+        var toBeRemoved: Bool
         
-        init(coordinate: CLLocationCoordinate2D, direction: MbtaApi.Direction, title: String?, subtitle: String?) {
-            self.coordinate = coordinate
-            self.direction = direction
-            self.title = title
-            self.subtitle = subtitle
+        init(trainStatus: MbtaApi.TrainStatus) {
+            self.coordinate = trainStatus.location
+            self.direction = trainStatus.direction
+            self.title = trainStatus.headsign
+            self.subtitle = "(" + String(trainStatus.vehicleId) + ") " + trainStatus.tripName
+            self.toBeRemoved = false
         }
-
-        // Called as a result of dragging an annotation view.
-        // func setCoordinate(newCoordinate: CLLocationCoordinate2D)
     }
     
     class TrainMapAnnotationView: MKAnnotationView {
