@@ -89,13 +89,13 @@ class MapController: UIViewController, MKMapViewDelegate {
     func updateTrains() {
         if let statuses = MbtaApi.greenLineBTrainStatuses() {
             for annotation in mapView.annotations {
-                if let trainAnnotation = annotation as? GreenLineTrainMapAnnotation {
+                if let trainAnnotation = annotation as? TrainMapAnnotation {
                     mapView.removeAnnotation(trainAnnotation)
                 }
             }
             
             for status in statuses {
-                let annotation = GreenLineTrainMapAnnotation(coordinate: status.location, direction: status.direction,
+                let annotation = TrainMapAnnotation(coordinate: status.location, direction: status.direction,
                     title: status.headsign, subtitle: "(" + String(status.vehicleId) + ") " + status.tripName)
                 self.mapView.addAnnotation(annotation)
             }
@@ -117,12 +117,12 @@ class MapController: UIViewController, MKMapViewDelegate {
 // MARK: - <MKMapViewDelegate>
     
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-        if let greenLineAnnotation = annotation as? GreenLineTrainMapAnnotation {
+        if let greenLineAnnotation = annotation as? TrainMapAnnotation {
             var view = mapView.dequeueReusableAnnotationViewWithIdentifier(Settings.reuseIdentifier)
             if (view != nil) {
                 return view!
             }
-            return GreenLineTrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
+            return TrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
         }
         
         if let stationAnnotation = annotation as? MKPointAnnotation {
@@ -145,7 +145,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
 // MARK: - Annotation classes
     
-    class GreenLineTrainMapAnnotation: NSObject, MKAnnotation {
+    class TrainMapAnnotation: NSObject, MKAnnotation {
         
         var coordinate: CLLocationCoordinate2D      // FIXME: MUST observe KVO, per protocol docs!
         private(set) var direction: MbtaApi.Direction
@@ -163,7 +163,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         // func setCoordinate(newCoordinate: CLLocationCoordinate2D)
     }
     
-    class GreenLineTrainMapAnnotationView: MKAnnotationView {
+    class TrainMapAnnotationView: MKAnnotationView {
 
         override var annotation: MKAnnotation! {
             set {
@@ -192,7 +192,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
         
         func updateImage() {
-            let greenLineAnnotation = annotation as GreenLineTrainMapAnnotation
+            let greenLineAnnotation = annotation as TrainMapAnnotation
             var imageName: String?
             
             switch (greenLineAnnotation.direction) {
