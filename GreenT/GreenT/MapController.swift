@@ -125,7 +125,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     class GreenLineTrainMapAnnotation: NSObject, MKAnnotation {
         
-        var coordinate: CLLocationCoordinate2D
+        var coordinate: CLLocationCoordinate2D      // FIXME: MUST observe KVO, per protocol docs!
         private(set) var direction: MbtaApi.Direction
         private(set) var title: String!
         private(set) var subtitle: String!
