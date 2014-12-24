@@ -30,6 +30,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        mapView.showsPointsOfInterest = false
         placeGreenLineOverlay()
         placeStations()
         
