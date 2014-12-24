@@ -16,6 +16,8 @@ class MapController: UIViewController, MKMapViewDelegate {
 // MARK: - Properties
     
     @IBOutlet var mapView: MKMapView!
+    
+    private var timer: NSTimer?
 
     
 // MARK: - Initialization & lifecycle
@@ -30,14 +32,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         placeGreenLineOverlay()
         
-        let statuses = MbtaApi.greenLineBTrainStatuses()
-        if let statusesReal = statuses {
-            for status in statusesReal {
-                let annotation = GreenLineTrainMapAnnotation(coordinate: status.location, direction: status.direction,
-                    title: status.headsign, subtitle: status.tripName)
-                self.mapView.addAnnotation(annotation)
-            }
-        }
+        updateTrains()
     }
 
     override func didReceiveMemoryWarning() {
@@ -76,6 +71,30 @@ class MapController: UIViewController, MKMapViewDelegate {
             var polyline = MKPolyline(coordinates: &points, count: points.count)
             mapView.addOverlay(polyline, level: .AboveRoads)
         }
+    }
+    
+    func updateTrains() {
+        let statuses = MbtaApi.greenLineBTrainStatuses()
+        if let statusesReal = statuses {
+            mapView.removeAnnotations(mapView.annotations)
+            
+            for status in statusesReal {
+                let annotation = GreenLineTrainMapAnnotation(coordinate: status.location, direction: status.direction,
+                    title: status.headsign, subtitle: status.tripName)
+                self.mapView.addAnnotation(annotation)
+            }
+        }
+        
+        scheduleNextUpdate()
+    }
+    
+    func scheduleNextUpdate() {
+        
+        // FIXME: timer must be invalidated when map controller/view goes away or when app goes to background, etc.;
+        // must be restarted when the app and map resume
+        
+        timer = NSTimer.scheduledTimerWithTimeInterval(Settings.updateInterval, target: self,
+            selector: "updateTrains", userInfo: nil, repeats: false)
     }
     
 
@@ -125,6 +144,18 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     class GreenLineTrainMapAnnotationView: MKAnnotationView {
 
+        override var annotation: MKAnnotation! {
+            set {
+                super.annotation = newValue
+                if (newValue != nil) {
+                    updateImage()
+                }
+            }
+            get {
+                return super.annotation
+            }
+        }
+        
         required init(coder: NSCoder) {
             super.init(coder: coder)
         }
@@ -137,7 +168,9 @@ class MapController: UIViewController, MKMapViewDelegate {
             super.init(annotation: annotation, reuseIdentifier: Settings.reuseIdentifier)
             
             canShowCallout = true
-            
+        }
+        
+        func updateImage() {
             let greenLineAnnotation = annotation as GreenLineTrainMapAnnotation
             var imageName: String?
             
@@ -160,5 +193,6 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     private struct Settings {
         static let reuseIdentifier = "GreenLineTrainLocation"
+        static let updateInterval: NSTimeInterval = 15
     }
 }
