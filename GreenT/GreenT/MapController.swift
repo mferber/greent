@@ -143,6 +143,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         return nil
     }
 
+    
 // MARK: - Annotation classes
     
     class GreenLineTrainMapAnnotation: NSObject, MKAnnotation {
