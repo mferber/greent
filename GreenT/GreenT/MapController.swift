@@ -31,6 +31,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         
         placeGreenLineOverlay()
+        placeStations()
         
         updateTrains()
     }
@@ -49,7 +50,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
 
 
-// MARK: - Helpers
+// MARK: - Populating map
     
     func placeGreenLineOverlay() {
         let routeFileUrl: NSURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("greenline_b_aboveground_route", ofType: "csv")!)!
@@ -73,9 +74,26 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func placeStations() {
+        if let stations = MbtaApi.greenLineBStations() {
+            for (name, info) in stations {
+                println("\(name): \(info)")
+                
+                let annotation = MKPointAnnotation()
+                annotation.title = name
+                annotation.coordinate = info.location
+                mapView.addAnnotation(annotation)
+            }
+        }
+    }
+    
     func updateTrains() {
         if let statuses = MbtaApi.greenLineBTrainStatuses() {
-            mapView.removeAnnotations(mapView.annotations)
+            for annotation in mapView.annotations {
+                if let trainAnnotation = annotation as? GreenLineTrainMapAnnotation {
+                    mapView.removeAnnotation(trainAnnotation)
+                }
+            }
             
             for status in statuses {
                 let annotation = GreenLineTrainMapAnnotation(coordinate: status.location, direction: status.direction,
@@ -100,14 +118,19 @@ class MapController: UIViewController, MKMapViewDelegate {
 // MARK: - <MKMapViewDelegate>
     
     func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-        let greenLineAnnotation = annotation as GreenLineTrainMapAnnotation
-        
-        var view = mapView.dequeueReusableAnnotationViewWithIdentifier(Settings.reuseIdentifier)
-        if (view != nil) {
-            return view!
+        if let greenLineAnnotation = annotation as? GreenLineTrainMapAnnotation {
+            var view = mapView.dequeueReusableAnnotationViewWithIdentifier(Settings.reuseIdentifier)
+            if (view != nil) {
+                return view!
+            }
+            return GreenLineTrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
         }
         
-        return GreenLineTrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
+        if let stationAnnotation = annotation as? MKPointAnnotation {
+            return StationAnnotationView(annotation: stationAnnotation, reuseIdentifier: "")
+        }
+        
+        return nil
     }
         
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
@@ -118,7 +141,6 @@ class MapController: UIViewController, MKMapViewDelegate {
             return polylineRenderer
         }
         return nil
-
     }
 
 // MARK: - Annotation classes
@@ -187,6 +209,23 @@ class MapController: UIViewController, MKMapViewDelegate {
             if (imageName != nil) {
                 image = UIImage(named: imageName!)
             }
+        }
+    }
+    
+    class StationAnnotationView: MKAnnotationView {
+        required init(coder: NSCoder) {
+            super.init(coder: coder)
+        }
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+        }
+
+        override init(annotation: MKAnnotation, reuseIdentifier: String) {
+            super.init(annotation: annotation, reuseIdentifier: Settings.reuseIdentifier)
+            
+            canShowCallout = true
+            image = UIImage(named: "station")
         }
     }
     

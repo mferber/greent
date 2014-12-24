@@ -42,6 +42,17 @@ class MbtaApi {
         }
     }
     
+    struct Station: Printable {
+        let name: String
+        let location: CLLocationCoordinate2D
+        
+        var description: String {
+            get {
+                return "\(name) (\(location.latitude), \(location.longitude)))"
+            }
+        }
+    }
+    
     struct TrainStatus: Printable {
         let vehicleId: Int
         let headsign: String
@@ -57,6 +68,36 @@ class MbtaApi {
     }
     
     // MARK: - High-level API
+    
+    class func greenLineBStations() -> [String: Station]? {
+        var result: [String: Station]!
+        for route in ["810_", "813_", "823_"] {
+            if let data = stopsByRoute(route) {
+                if (result == nil) {
+                    result = [String: Station]()
+                }
+
+                if let directions = data["direction"] as? [[String: AnyObject]] {
+                    for direction in directions {
+                        if let stops = direction["stop"] as? [[String: AnyObject]] {
+                            for stop in stops {
+                                let name = stop["parent_station_name"]! as String
+                                let lat = stop["stop_lat"]! as String
+                                let lon = stop["stop_lon"]! as NSString
+                                
+                                let latDegrees = (lat as NSString).doubleValue as CLLocationDegrees
+                                let lonDegrees = (lon as NSString).doubleValue as CLLocationDegrees
+                                let location = CLLocationCoordinate2D(latitude: latDegrees, longitude: lonDegrees)
+                                
+                                result[name] = Station(name: name, location: location)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    }
     
     class func greenLineBTrainStatuses() -> [TrainStatus]? {
         if let data = vehiclesByRoutes(["810_", "813_", "823_"]) {
@@ -100,6 +141,14 @@ class MbtaApi {
     
     
     // MARK: - Low-level API (wrappers for published API)
+    
+    class func stopsByRoute(route: String) -> [String: AnyObject]? {
+        let rawData: Dictionary? = getJSONDictionary("stopsbyroute", params:["route": route])
+        if rawData == nil {
+            println("stopsbyroute: No data retrieved from MBTA API")
+        }
+        return rawData;
+    }
     
     class func vehiclesByRoutes(routes: [String]) -> [String: AnyObject]? {
         let rawData: Dictionary? = getJSONDictionary("vehiclesbyroutes", params:["routes": ",".join(routes)])
