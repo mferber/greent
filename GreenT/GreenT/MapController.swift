@@ -86,12 +86,12 @@ class MapController: UIViewController, MKMapViewDelegate {
         
         var view = mapView.dequeueReusableAnnotationViewWithIdentifier(Settings.reuseIdentifier)
         if (view != nil) {
-            return view
+            return view!
         }
         
         return GreenLineTrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
     }
-    
+        
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
         if overlay is MKPolyline {
             var polylineRenderer = MKPolylineRenderer(overlay: overlay)
@@ -108,14 +108,15 @@ class MapController: UIViewController, MKMapViewDelegate {
     class GreenLineTrainMapAnnotation: NSObject, MKAnnotation {
         
         var coordinate: CLLocationCoordinate2D
-        var direction: MbtaApi.Direction
-        var title: String?
-        var subtitle: String?
+        private(set) var direction: MbtaApi.Direction
+        private(set) var title: String!
+        private(set) var subtitle: String!
         
         init(coordinate: CLLocationCoordinate2D, direction: MbtaApi.Direction, title: String?, subtitle: String?) {
             self.coordinate = coordinate
             self.direction = direction
             self.title = title
+            self.subtitle = subtitle
         }
 
         // Called as a result of dragging an annotation view.
@@ -135,16 +136,18 @@ class MapController: UIViewController, MKMapViewDelegate {
         override init(annotation: MKAnnotation, reuseIdentifier: String) {
             super.init(annotation: annotation, reuseIdentifier: Settings.reuseIdentifier)
             
+            canShowCallout = true
+            
             let greenLineAnnotation = annotation as GreenLineTrainMapAnnotation
             var imageName: String?
             
             switch (greenLineAnnotation.direction) {
             case .Eastbound:
                 imageName = "greenEastbound"
-                centerOffset = CGPoint(x: CGFloat(10), y: CGFloat(10))
+                centerOffset = CGPoint(x: CGFloat(0), y: CGFloat(5))
             case .Westbound:
                 imageName = "greenWestbound"
-                centerOffset = CGPoint(x: CGFloat(-10), y: CGFloat(-10))
+                centerOffset = CGPoint(x: CGFloat(0), y: CGFloat(-5))
             default:
                 imageName = nil
             }
