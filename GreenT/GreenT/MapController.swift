@@ -80,7 +80,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             for status in statusesReal {
                 let annotation = GreenLineTrainMapAnnotation(coordinate: status.location, direction: status.direction,
-                    title: status.headsign, subtitle: status.tripName)
+                    title: status.headsign, subtitle: "(" + String(status.vehicleId) + ") " + status.tripName)
                 self.mapView.addAnnotation(annotation)
             }
         }
