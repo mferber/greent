@@ -74,7 +74,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
             
             var polyline = MKPolyline(coordinates: &points, count: points.count)
-            mapView.addOverlay(polyline)
+            mapView.addOverlay(polyline, level: .AboveRoads)
         }
     }
     
