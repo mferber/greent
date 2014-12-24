@@ -7,12 +7,12 @@
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "Westbound@2x.png"
+      "filename" : "WestArrow@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "Westbound@3x.png"
+      "filename" : "WestArrow@3x.png"
     }
   ],
   "info" : {
