@@ -113,37 +113,8 @@ class MapController: UIViewController, MKMapViewDelegate {
             selector: "updateTrains", userInfo: nil, repeats: false)
     }
     
-
-// MARK: - <MKMapViewDelegate>
     
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
-        if let greenLineAnnotation = annotation as? TrainMapAnnotation {
-            var view = mapView.dequeueReusableAnnotationViewWithIdentifier(Settings.reuseIdentifier)
-            if (view != nil) {
-                return view!
-            }
-            return TrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
-        }
-        
-        if let stationAnnotation = annotation as? MKPointAnnotation {
-            return StationAnnotationView(annotation: stationAnnotation, reuseIdentifier: "")
-        }
-        
-        return nil
-    }
-        
-    func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
-        if overlay is MKPolyline {
-            var polylineRenderer = MKPolylineRenderer(overlay: overlay)
-            polylineRenderer.strokeColor = UIColor(red: 0.06, green: 0.5, blue: 0.32, alpha: 1)
-            polylineRenderer.lineWidth = 8
-            return polylineRenderer
-        }
-        return nil
-    }
-
-    
-// MARK: - Annotation classes
+// MARK: - Annotation helper classes
     
     class TrainMapAnnotation: NSObject, MKAnnotation {
         
@@ -229,8 +200,42 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
     }
     
+// MARK: - Constants
+    
     private struct Settings {
         static let reuseIdentifier = "GreenLineTrainLocation"
         static let updateInterval: NSTimeInterval = 15
+    }
+}
+
+
+// MARK: - <MKMapViewDelegate>
+
+extension MapController: MKMapViewDelegate {
+    
+    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView! {
+        if let greenLineAnnotation = annotation as? TrainMapAnnotation {
+            var view = mapView.dequeueReusableAnnotationViewWithIdentifier(Settings.reuseIdentifier)
+            if (view != nil) {
+                return view!
+            }
+            return TrainMapAnnotationView(annotation: greenLineAnnotation, reuseIdentifier: Settings.reuseIdentifier)
+        }
+        
+        if let stationAnnotation = annotation as? MKPointAnnotation {
+            return StationAnnotationView(annotation: stationAnnotation, reuseIdentifier: "")
+        }
+        
+        return nil
+    }
+    
+    func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
+        if overlay is MKPolyline {
+            var polylineRenderer = MKPolylineRenderer(overlay: overlay)
+            polylineRenderer.strokeColor = UIColor(red: 0.06, green: 0.5, blue: 0.32, alpha: 1)
+            polylineRenderer.lineWidth = 8
+            return polylineRenderer
+        }
+        return nil
     }
 }
