@@ -78,8 +78,6 @@ class MapController: UIViewController, MKMapViewDelegate {
     func placeStations() {
         if let stations = MbtaApi.greenLineBStations() {
             for (name, info) in stations {
-                println("\(name): \(info)")
-                
                 let annotation = MKPointAnnotation()
                 annotation.title = name
                 annotation.coordinate = info.location
