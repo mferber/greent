@@ -62,24 +62,32 @@ class MbtaApi {
         if let data = vehiclesByRoutes(["810_", "813_", "823_"]) {
             var statuses = [TrainStatus]()
             
-            for mode in data["mode"]! as [[String: AnyObject]] {
-                for route in mode["route"]! as [[String: AnyObject]] {
-                    for direction in route["direction"]! as [[String: AnyObject]] {
-                        let directionIdStr = direction["direction_id"]! as String
-                        let directionEnum = Direction.forGreenLineDirectionId(directionIdStr.toInt()!)
-                        
-                        for trip in direction["trip"]! as [[String: AnyObject]] {
-                            let headsign = trip["trip_headsign"]! as String
-                            let trip_name = trip["trip_name"]! as String
-                            
-                            let vehicle = trip["vehicle"]! as [String: AnyObject]
-                            let vehicleId = (vehicle["vehicle_id"]! as String).toInt()!
-                            let lat = (vehicle["vehicle_lat"]! as NSString).doubleValue
-                            let long = (vehicle["vehicle_lon"]! as NSString).doubleValue
-                            
-                            statuses.append(TrainStatus(vehicleId: vehicleId, headsign: headsign, tripName: trip_name,
-                                direction: directionEnum, location: CLLocationCoordinate2D(latitude: lat,
-                                    longitude: long)))
+            if let modes = data["mode"] as? [[String: AnyObject]] {
+                for mode in modes {
+                    if let routes = mode["route"] as? [[String: AnyObject]] {
+                        for route in routes {
+                            if let directions = route["direction"] as? [[String: AnyObject]] {
+                                for direction in directions {
+                                    let directionIdStr = direction["direction_id"]! as String
+                                    let directionEnum = Direction.forGreenLineDirectionId(directionIdStr.toInt()!)
+                                    
+                                    if let trips = direction["trip"] as? [[String: AnyObject]] {
+                                        for trip in trips {
+                                            let headsign = trip["trip_headsign"]! as String
+                                            let trip_name = trip["trip_name"]! as String
+                                            
+                                            let vehicle = trip["vehicle"]! as [String: AnyObject]
+                                            let vehicleId = (vehicle["vehicle_id"]! as String).toInt()!
+                                            let lat = (vehicle["vehicle_lat"]! as NSString).doubleValue
+                                            let long = (vehicle["vehicle_lon"]! as NSString).doubleValue
+                                            
+                                            statuses.append(TrainStatus(vehicleId: vehicleId, headsign: headsign, tripName: trip_name,
+                                                direction: directionEnum, location: CLLocationCoordinate2D(latitude: lat,
+                                                    longitude: long)))
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
