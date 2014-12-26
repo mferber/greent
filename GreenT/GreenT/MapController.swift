@@ -207,8 +207,7 @@ class MapController: UIViewController, MKMapViewDelegate {
         }
         
         required init(coder: NSCoder) {
-            markerView = nil
-            super.init(coder: coder)
+            fatalError("NSCoding not supported")
         }
         
         // unclear why this initializer is needed; it gets called from MKAnnotationView.init(annotation, reuseIdentifier)
@@ -271,7 +270,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     class StationAnnotationView: MKAnnotationView {
         required init(coder: NSCoder) {
-            super.init(coder: coder)
+            fatalError("NSCoding not supported")
         }
         
         override init(frame: CGRect) {
