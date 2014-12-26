@@ -93,8 +93,12 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     func updateTrains() {
+//        println("--- UPDATE: \(NSDate()) ---")
+        
         if let statuses = MbtaApi.greenLineBTrainStatuses() {
 
+//            println("--- \(statuses.count) train(s)")
+            
             // flag all trains for removal unless we see them in the updated data
             for annotation in mapView.annotations {
                 if let trainAnnotation = annotation as? TrainMapAnnotation {
@@ -103,10 +107,10 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
             
             for status in statuses {
+//                print("\(status.vehicleId): ")
+                
                 if let trainAnnotation = trainAnnotations[status.vehicleId] {
-//                    NSLog("Moving \(status.vehicleId) from (\(trainAnnotation.coordinate.latitude as Double), " +
-//                        "\(trainAnnotation.coordinate.longitude as Double)) to (\(status.location.latitude as Double), " +
-//                        "\(status.location.longitude as Double))")
+//                    println("moving from \(coordsString(trainAnnotation.coordinate)) to \(coordsString(status.location))")
                     
                     trainAnnotation.toBeRemoved = false
                     
@@ -124,7 +128,8 @@ class MapController: UIViewController, MKMapViewDelegate {
                     })
                 }
                 else {
-//                    NSLog("Adding \(status.vehicleId)")
+//                    println("adding at \(coordsString(status.location))")
+                    
                     let annotation = TrainMapAnnotation(trainStatus: status)
                     mapView.addAnnotation(annotation)
                     
@@ -136,13 +141,18 @@ class MapController: UIViewController, MKMapViewDelegate {
             for annotation in mapView.annotations {
                 if let trainAnnotation = annotation as? TrainMapAnnotation {
                     if trainAnnotation.toBeRemoved {
-//                        NSLog("Removing \(trainAnnotation.subtitle)")
+//                        println("\(trainAnnotation.vehicleId): removing")
+                        
                         mapView.removeAnnotation(trainAnnotation)
                         trainAnnotations.removeValueForKey(trainAnnotation.vehicleId)
                     }
                 }
             }
         }
+        
+//        let trainMapAnnotations = mapView.annotations.filter { $0 is TrainMapAnnotation }
+//        println("--- AFTER update: \(trainAnnotations.count) annotation(s), \(trainMapAnnotations.count) on map")
+//        println()
         
         scheduleNextUpdate()
     }
@@ -156,6 +166,12 @@ class MapController: UIViewController, MKMapViewDelegate {
             selector: "updateTrains", userInfo: nil, repeats: false)
     }
     
+    
+    // MARK: - Helpers
+    
+    func coordsString(coordinate: CLLocationCoordinate2D) -> String {
+        return "(\(coordinate.latitude as Double), \(coordinate.longitude as Double))"
+    }
     
 // MARK: - Annotation helper classes
     
