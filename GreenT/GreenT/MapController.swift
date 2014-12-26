@@ -32,6 +32,10 @@ class MapController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // disable map rotation: a cheap and dirty way to avoid having to rotate the train markers relative
+        // to the map, which looks like it's going to be more difficult than expected
+        mapView.rotateEnabled = false
+        
         mapView.showsPointsOfInterest = false
         placeGreenLineOverlay()
         placeStations()
