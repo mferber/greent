@@ -59,6 +59,7 @@ class MbtaApi {
         let tripName: String
         let direction: Direction
         let location: CLLocationCoordinate2D
+        let bearingInDegreesClockwiseFromNorth: CLLocationDegrees
         
         var description: String {
             get {
@@ -119,12 +120,14 @@ class MbtaApi {
                                             
                                             let vehicle = trip["vehicle"]! as [String: AnyObject]
                                             let vehicleId = (vehicle["vehicle_id"]! as String).toInt()!
-                                            let lat = (vehicle["vehicle_lat"]! as NSString).doubleValue
-                                            let long = (vehicle["vehicle_lon"]! as NSString).doubleValue
+                                            let lat = (vehicle["vehicle_lat"]! as NSString).doubleValue as CLLocationDegrees
+                                            let long = (vehicle["vehicle_lon"]! as NSString).doubleValue as CLLocationDegrees
+                                            
+                                            let bearing = (vehicle["vehicle_bearing"]! as NSString).doubleValue as CLLocationDegrees
                                             
                                             statuses.append(TrainStatus(vehicleId: vehicleId, headsign: headsign, tripName: trip_name,
                                                 direction: directionEnum, location: CLLocationCoordinate2D(latitude: lat,
-                                                    longitude: long)))
+                                                    longitude: long), bearingInDegreesClockwiseFromNorth: bearing))
                                         }
                                     }
                                 }

@@ -106,8 +106,12 @@ class MapController: UIViewController, MKMapViewDelegate {
                     
                     trainAnnotation.toBeRemoved = false
                     
-                    UIView.animateWithDuration(1.0, animations: { () -> Void in
+                    let theMapView = mapView!
+                    UIView.animateWithDuration(1.0, animations: { [unowned theMapView] () -> Void in
                         trainAnnotation.coordinate = status.location
+                        trainAnnotation.bearingInDegreesClockwiseFromNorth = status.bearingInDegreesClockwiseFromNorth
+                        let trainAnnotationView = theMapView.viewForAnnotation(trainAnnotation) as TrainMapAnnotationView
+                        trainAnnotationView.update()
                     })
                 }
                 else {
@@ -147,17 +151,20 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     class TrainMapAnnotation: NSObject, MKAnnotation {
         
-        dynamic var coordinate: CLLocationCoordinate2D      // dynamic enables KVO
+        dynamic var coordinate: CLLocationCoordinate2D      // dynamic enables KVO, for map updating
+        var bearingInDegreesClockwiseFromNorth: CLLocationDegrees
+        var toBeRemoved: Bool
+        
         private(set) var direction: MbtaApi.Direction
         private(set) var title: String!
         private(set) var subtitle: String!
-        var toBeRemoved: Bool
         
         init(trainStatus: MbtaApi.TrainStatus) {
-            self.coordinate = trainStatus.location
             self.direction = trainStatus.direction
             self.title = trainStatus.headsign
             self.subtitle = "(" + String(trainStatus.vehicleId) + ") " + trainStatus.tripName
+            self.coordinate = trainStatus.location
+            self.bearingInDegreesClockwiseFromNorth = trainStatus.bearingInDegreesClockwiseFromNorth
             self.toBeRemoved = false
         }
     }
@@ -168,7 +175,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             set {
                 super.annotation = newValue
                 if (newValue != nil) {
-                    updateImage()
+                    update()
                 }
             }
             get {
@@ -190,16 +197,16 @@ class MapController: UIViewController, MKMapViewDelegate {
             canShowCallout = true
         }
         
-        func updateImage() {
+        func update() {
             let greenLineAnnotation = annotation as TrainMapAnnotation
             var imageName: String?
             
             switch (greenLineAnnotation.direction) {
             case .Eastbound:
-                imageName = "greenEastbound"
+                imageName = "direction0Marker"
                 centerOffset = CGPoint(x: CGFloat(0), y: CGFloat(5))
             case .Westbound:
-                imageName = "greenWestbound"
+                imageName = "direction1Marker"
                 centerOffset = CGPoint(x: CGFloat(0), y: CGFloat(-5))
             default:
                 imageName = nil
@@ -207,6 +214,15 @@ class MapController: UIViewController, MKMapViewDelegate {
             
             if (imageName != nil) {
                 image = UIImage(named: imageName!)
+                
+                // API bearing is deg clockwise (GTFS standard).
+                // Transform uses radians clockwise (doc says counterclockwise for iOS; doc is WRONG).
+                let degrees = greenLineAnnotation.bearingInDegreesClockwiseFromNorth
+                let radians = degrees * M_PI / 180.0
+//                println("Deg: \(degrees) -> rad: \(radians)")
+                
+                println("Updating transform radians: \(self.transform) -> \(radians)")
+                transform = CGAffineTransformMakeRotation(CGFloat(radians))
             }
         }
     }

@@ -7,12 +7,12 @@
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "EastArrow@2x.png"
+      "filename" : "Direction0Arrow@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "EastArrow@3x.png"
+      "filename" : "Direction0Arrow@3x.png"
     }
   ],
   "info" : {
