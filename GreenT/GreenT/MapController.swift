@@ -110,8 +110,13 @@ class MapController: UIViewController, MKMapViewDelegate {
                     UIView.animateWithDuration(1.0, animations: { [unowned theMapView] () -> Void in
                         trainAnnotation.coordinate = status.location
                         trainAnnotation.bearingInDegreesClockwiseFromNorth = status.bearingInDegreesClockwiseFromNorth
-                        let trainAnnotationView = theMapView.viewForAnnotation(trainAnnotation) as TrainMapAnnotationView
-                        trainAnnotationView.update()
+                        
+                        let annotationView = theMapView.viewForAnnotation(trainAnnotation)
+                        if (annotationView != nil) {
+                            if let trainAnnotationView = annotationView as? TrainMapAnnotationView {
+                                trainAnnotationView.update()
+                            }
+                        }
                     })
                 }
                 else {
