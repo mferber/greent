@@ -224,9 +224,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                 // Transform uses radians clockwise (doc says counterclockwise for iOS; doc is WRONG).
                 let degrees = greenLineAnnotation.bearingInDegreesClockwiseFromNorth
                 let radians = degrees * M_PI / 180.0
-//                println("Deg: \(degrees) -> rad: \(radians)")
-                
-                println("Updating transform radians: \(self.transform) -> \(radians)")
+//                println("Deg: \(degrees) -> rad: \(radians)")                
                 transform = CGAffineTransformMakeRotation(CGFloat(radians))
             }
         }
