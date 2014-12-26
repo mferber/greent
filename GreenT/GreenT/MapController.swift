@@ -138,6 +138,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                     if trainAnnotation.toBeRemoved {
 //                        NSLog("Removing \(trainAnnotation.subtitle)")
                         mapView.removeAnnotation(trainAnnotation)
+                        trainAnnotations.removeValueForKey(trainAnnotation.vehicleId)
                     }
                 }
             }
