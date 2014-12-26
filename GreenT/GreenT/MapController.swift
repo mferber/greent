@@ -164,11 +164,13 @@ class MapController: UIViewController, MKMapViewDelegate {
         var bearingInDegreesClockwiseFromNorth: CLLocationDegrees
         var toBeRemoved: Bool
         
+        private(set) var vehicleId: Int
         private(set) var direction: MbtaApi.Direction
         private(set) var title: String!
         private(set) var subtitle: String!
         
         init(trainStatus: MbtaApi.TrainStatus) {
+            self.vehicleId = trainStatus.vehicleId
             self.direction = trainStatus.direction
             self.title = trainStatus.headsign
             self.subtitle = "(" + String(trainStatus.vehicleId) + ") " + trainStatus.tripName
