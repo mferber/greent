@@ -288,7 +288,7 @@ class MapController: UIViewController, MKMapViewDelegate {
     
     private struct Settings {
         static let reuseIdentifier = "GreenLineTrainLocation"
-        static let updateInterval: NSTimeInterval = 15
+        static let updateInterval: NSTimeInterval = 10.5
     }
 }
 
