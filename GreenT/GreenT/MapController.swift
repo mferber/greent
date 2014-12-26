@@ -175,7 +175,8 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     class TrainMapAnnotationView: MKAnnotationView {
-
+        var markerView: UIImageView!
+        
         override var annotation: MKAnnotation! {
             set {
                 super.annotation = newValue
@@ -188,17 +189,36 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
         }
         
+        override var image: UIImage! {
+            set {
+                if (self.markerView != nil) {
+                    self.markerView.image = newValue
+                }
+            }
+            get {
+                return self.markerView?.image
+            }
+        }
+        
         required init(coder: NSCoder) {
+            markerView = nil
             super.init(coder: coder)
         }
         
+        // unclear why this initializer is needed; it gets called from MKAnnotationView.init(annotation, reuseIdentifier)
         override init(frame: CGRect) {
+            markerView = nil
             super.init(frame: frame)
         }
         
         override init(annotation: MKAnnotation, reuseIdentifier: String) {
+            markerView = nil
             super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
             
+            markerView = UIImageView()
+            addSubview(markerView)
+            markerView.center = self.center
+
             canShowCallout = true
         }
         
@@ -206,26 +226,39 @@ class MapController: UIViewController, MKMapViewDelegate {
             let greenLineAnnotation = annotation as TrainMapAnnotation
             var imageName: String?
             
+            if markerView == nil {
+                return
+            }
+            
             switch (greenLineAnnotation.direction) {
             case .Eastbound:
                 imageName = "direction0Marker"
-                centerOffset = CGPoint(x: CGFloat(0), y: CGFloat(5))
             case .Westbound:
                 imageName = "direction1Marker"
-                centerOffset = CGPoint(x: CGFloat(0), y: CGFloat(-5))
             default:
                 imageName = nil
             }
             
             if (imageName != nil) {
                 image = UIImage(named: imageName!)
-                
+
                 // API bearing is deg clockwise (GTFS standard).
                 // Transform uses radians clockwise (doc says counterclockwise for iOS; doc is WRONG).
                 let degrees = greenLineAnnotation.bearingInDegreesClockwiseFromNorth
                 let radians = degrees * M_PI / 180.0
-//                println("Deg: \(degrees) -> rad: \(radians)")                
-                transform = CGAffineTransformMakeRotation(CGFloat(radians))
+//                println("Deg: \(degrees) -> rad: \(radians)")
+                markerView.transform = CGAffineTransformMakeRotation(CGFloat(radians))
+                
+                markerView.sizeToFit()
+                self.bounds = markerView.frame
+                
+                // offset from the path to the "right" by half the marker's width (so two markers can pass and just
+                // fit alongside each other), where "right" is orthogonal to direction of travel
+                let offsetMagnitude = Double(markerView.image!.size.width) * 0.5
+                let offsetDirectionRadians = radians + M_PI / 2
+                let offsetX = offsetMagnitude * sin(offsetDirectionRadians)
+                let offsetY = -offsetMagnitude * cos(offsetDirectionRadians)    // y is flipped on iOS
+                centerOffset = CGPoint(x: CGFloat(offsetX), y: CGFloat(offsetY))
             }
         }
     }
