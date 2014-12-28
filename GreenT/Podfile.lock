@@ -9,7 +9,7 @@ PODS:
     - CocoaLumberjack/Default
 
 DEPENDENCIES:
-  - CocoaLumberjack (= 2.0.0rc)
+  - CocoaLumberjack (= 2.0.0-rc)
 
 SPEC CHECKSUMS:
   CocoaLumberjack: 6186e27827fc574b50b16c10102fcc591437f06c

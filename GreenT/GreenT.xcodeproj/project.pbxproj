@@ -17,6 +17,7 @@
 		3993400F1A4627A5008E701A /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3993400E1A4627A5008E701A /* MapKit.framework */; };
 		399340141A4644C8008E701A /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399340131A4644C8008E701A /* MapController.swift */; };
 		399340181A464E19008E701A /* MbtaApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399340171A464E19008E701A /* MbtaApi.swift */; };
+		39994F361A4E1C5300AA4AE3 /* CocoaLumberjackSwift.m in Sources */ = {isa = PBXBuildFile; fileRef = 39994F351A4E1C5300AA4AE3 /* CocoaLumberjackSwift.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,9 @@
 		3993400E1A4627A5008E701A /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		399340131A4644C8008E701A /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
 		399340171A464E19008E701A /* MbtaApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MbtaApi.swift; sourceTree = "<group>"; };
+		39994F301A4E187900AA4AE3 /* bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "bridging-header.h"; sourceTree = "<group>"; };
+		39994F311A4E1BEE00AA4AE3 /* CocoaLumberjackSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CocoaLumberjackSwift.h; sourceTree = "<group>"; };
+		39994F351A4E1C5300AA4AE3 /* CocoaLumberjackSwift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaLumberjackSwift.m; sourceTree = "<group>"; };
 		4770E5FC4EA2F1488E58336C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D9EA4136BBF7568B29C4409D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -123,6 +127,7 @@
 			children = (
 				39933FF71A462597008E701A /* LaunchScreen.xib */,
 				39933FED1A462597008E701A /* Info.plist */,
+				39994F301A4E187900AA4AE3 /* bridging-header.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -157,6 +162,8 @@
 			isa = PBXGroup;
 			children = (
 				39933FEE1A462597008E701A /* AppDelegate.swift */,
+				39994F311A4E1BEE00AA4AE3 /* CocoaLumberjackSwift.h */,
+				39994F351A4E1C5300AA4AE3 /* CocoaLumberjackSwift.m */,
 			);
 			name = App;
 			sourceTree = "<group>";
@@ -322,6 +329,7 @@
 			files = (
 				399340181A464E19008E701A /* MbtaApi.swift in Sources */,
 				399340141A4644C8008E701A /* MapController.swift in Sources */,
+				39994F361A4E1C5300AA4AE3 /* CocoaLumberjackSwift.m in Sources */,
 				39933FEF1A462597008E701A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -449,6 +457,7 @@
 				INFOPLIST_FILE = GreenT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "GreenT/bridging-header.h";
 			};
 			name = Debug;
 		};
@@ -460,6 +469,7 @@
 				INFOPLIST_FILE = GreenT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "GreenT/bridging-header.h";
 			};
 			name = Release;
 		};

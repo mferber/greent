@@ -13,9 +13,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+    
+    // MARK: - Lifecycle
+    
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool
+    {
+        initLogging()
+        
         return true
     }
 
@@ -42,5 +46,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+    // MARK: - Initialization
+    
+    func initLogging() {
+        DDLog.addLogger(DDASLLogger.sharedInstance())
+        DDLog.addLogger(DDTTYLogger.sharedInstance())
+    }
 }
 

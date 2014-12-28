@@ -148,7 +148,7 @@ class MbtaApi {
     class func stopsByRoute(route: String) -> [String: AnyObject]? {
         let rawData: Dictionary? = getJSONDictionary("stopsbyroute", params:["route": route])
         if rawData == nil {
-            println("stopsbyroute: No data retrieved from MBTA API")
+            DDLogSwift.logError("stopsbyroute: No data retrieved from MBTA API")
         }
         return rawData;
     }
@@ -156,7 +156,7 @@ class MbtaApi {
     class func vehiclesByRoutes(routes: [String]) -> [String: AnyObject]? {
         let rawData: Dictionary? = getJSONDictionary("vehiclesbyroutes", params:["routes": ",".join(routes)])
         if rawData == nil {
-            println("vehiclesbyroutes: No data retrieved from MBTA API")
+            DDLogSwift.logError("vehiclesbyroutes: No data retrieved from MBTA API")
         }
         return rawData;
     }
@@ -171,21 +171,17 @@ class MbtaApi {
         let dataOpt: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error: &error)
         
         if let data = dataOpt {
-//            println(NSString(data:data, encoding: NSASCIIStringEncoding))
-            
             var error: NSError?
             let jsonObj: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &error)
-            if let dict = jsonObj as? [String: AnyObject] {
-                return dict
-            }
-            else {
+            let dict = jsonObj as? [String: AnyObject]
+            if dict == nil {
                 let errDesc = error == nil ? "n/a": error!
-                println("Unexpected problem in JSON: error = \(errDesc)\nMESSAGE: \(NSString(data: data, encoding: NSASCIIStringEncoding))")
-                return nil
+                DDLogSwift.logError("Unexpected problem in JSON: error = \(errDesc)\nMESSAGE: \(NSString(data: data, encoding: NSASCIIStringEncoding))")
             }
+            return dict
         }
         else {
-            println("No data in response to \(url)")
+            DDLogSwift.logError("No data in response to \(url)")
             return nil
         }
     }
@@ -204,8 +200,8 @@ class MbtaApi {
             return getJSONDictionary(url)
         }
         else {
-            println("Couldn't form full URL from relative URL: \(relativeUrl)")
-            return nil;
+            DDLogSwift.logError("Couldn't form full URL from relative URL: \(relativeUrl)")
+            return nil
         }
     }
     

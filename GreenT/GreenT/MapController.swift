@@ -93,11 +93,11 @@ class MapController: UIViewController, MKMapViewDelegate {
     }
     
     func updateTrains() {
-//        println("--- UPDATE: \(NSDate()) ---")
+        DDLogSwift.logDebug("--- UPDATE: \(NSDate()) ---")
         
         if let statuses = MbtaApi.greenLineBTrainStatuses() {
 
-//            println("--- \(statuses.count) train(s)")
+            DDLogSwift.logDebug("\(statuses.count) train(s)")
             
             // flag all trains for removal unless we see them in the updated data
             for annotation in mapView.annotations {
@@ -107,10 +107,8 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
             
             for status in statuses {
-//                print("\(status.vehicleId): ")
-                
                 if let trainAnnotation = trainAnnotations[status.vehicleId] {
-//                    println("moving from \(coordsString(trainAnnotation.coordinate)) to \(coordsString(status.location))")
+                    DDLogSwift.logDebug("\(status.vehicleId): moving from \(coordsString(trainAnnotation.coordinate)) to \(coordsString(status.location))")
                     
                     trainAnnotation.toBeRemoved = false
                     
@@ -128,7 +126,7 @@ class MapController: UIViewController, MKMapViewDelegate {
                     })
                 }
                 else {
-//                    println("adding at \(coordsString(status.location))")
+                    DDLogSwift.logDebug("\(status.vehicleId): adding at \(coordsString(status.location))")
                     
                     let annotation = TrainMapAnnotation(trainStatus: status)
                     mapView.addAnnotation(annotation)
@@ -141,7 +139,7 @@ class MapController: UIViewController, MKMapViewDelegate {
             for annotation in mapView.annotations {
                 if let trainAnnotation = annotation as? TrainMapAnnotation {
                     if trainAnnotation.toBeRemoved {
-//                        println("\(trainAnnotation.vehicleId): removing")
+                        DDLogSwift.logDebug("\(trainAnnotation.vehicleId): removing")
                         
                         mapView.removeAnnotation(trainAnnotation)
                         trainAnnotations.removeValueForKey(trainAnnotation.vehicleId)
@@ -150,9 +148,8 @@ class MapController: UIViewController, MKMapViewDelegate {
             }
         }
         
-//        let trainMapAnnotations = mapView.annotations.filter { $0 is TrainMapAnnotation }
-//        println("--- AFTER update: \(trainAnnotations.count) annotation(s), \(trainMapAnnotations.count) on map")
-//        println()
+        let trainMapAnnotations = mapView.annotations.filter { $0 is TrainMapAnnotation }
+        DDLogSwift.logDebug("--- AFTER update: \(trainAnnotations.count) annotation(s), \(trainMapAnnotations.count) on map")
         
         scheduleNextUpdate()
     }
@@ -268,7 +265,9 @@ class MapController: UIViewController, MKMapViewDelegate {
                 // Transform uses radians clockwise (doc says counterclockwise for iOS; doc is WRONG).
                 let degrees = greenLineAnnotation.bearingInDegreesClockwiseFromNorth
                 let radians = degrees * M_PI / 180.0
-//                println("Deg: \(degrees) -> rad: \(radians)")
+                
+                // println("Deg: \(degrees) -> rad: \(radians)")
+                
                 markerView.transform = CGAffineTransformMakeRotation(CGFloat(radians))
                 
                 markerView.sizeToFit()
