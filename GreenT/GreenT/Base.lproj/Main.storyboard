@@ -12,7 +12,7 @@
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" userLabel="Main View">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
@@ -22,14 +22,62 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="OiD-Y8-VKN"/>
                                 </connections>
                             </mapView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2BA-Sr-TJS" userLabel="Controls View">
+                                <rect key="frame" x="0.0" y="552" width="600" height="48"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Alerts:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2s7-Xw-a54">
+                                        <rect key="frame" x="10" y="16" width="39.5" height="16"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Hw3-7j-LWz">
+                                        <rect key="frame" x="54.5" y="10" width="140" height="29"/>
+                                        <segments>
+                                            <segment title="None"/>
+                                            <segment title="East"/>
+                                            <segment title="West"/>
+                                        </segments>
+                                    </segmentedControl>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="69t-ZJ-B8p">
+                                        <rect key="frame" x="565" y="10" width="25" height="23"/>
+                                        <state key="normal" image="cogs">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="0.80000000000000004" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Hw3-7j-LWz" firstAttribute="leading" secondItem="2s7-Xw-a54" secondAttribute="trailing" constant="5" id="7UE-Od-w9S"/>
+                                    <constraint firstItem="2s7-Xw-a54" firstAttribute="baseline" secondItem="Hw3-7j-LWz" secondAttribute="baseline" constant="-0.5" id="8Dd-DD-tX1"/>
+                                    <constraint firstAttribute="bottom" secondItem="Hw3-7j-LWz" secondAttribute="bottom" constant="10" id="JOA-8S-Qnz"/>
+                                    <constraint firstItem="2s7-Xw-a54" firstAttribute="leading" secondItem="2BA-Sr-TJS" secondAttribute="leading" constant="10" id="PKo-nZ-iVH"/>
+                                    <constraint firstItem="Hw3-7j-LWz" firstAttribute="top" secondItem="2BA-Sr-TJS" secondAttribute="top" constant="10" id="QEm-5m-DCO"/>
+                                    <constraint firstAttribute="centerY" secondItem="69t-ZJ-B8p" secondAttribute="centerY" constant="2.5" id="Uje-sn-Nrp"/>
+                                    <constraint firstAttribute="trailing" secondItem="69t-ZJ-B8p" secondAttribute="trailing" constant="10" id="jT0-5z-F3x"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Jgf-uc-7Su" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="BvW-H8-gu9"/>
+                            <constraint firstAttribute="trailing" secondItem="2BA-Sr-TJS" secondAttribute="trailing" id="DNW-Oe-uBl"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Jgf-uc-7Su" secondAttribute="bottom" id="FSf-wU-tz6"/>
                             <constraint firstAttribute="trailing" secondItem="Jgf-uc-7Su" secondAttribute="trailing" id="G3F-a5-yFD"/>
                             <constraint firstItem="Jgf-uc-7Su" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="J3z-iM-nxo"/>
+                            <constraint firstItem="Jgf-uc-7Su" firstAttribute="bottom" secondItem="Hw3-7j-LWz" secondAttribute="bottom" constant="5" id="NG0-J1-6wb"/>
+                            <constraint firstItem="2BA-Sr-TJS" firstAttribute="leading" secondItem="Jgf-uc-7Su" secondAttribute="leading" id="chW-So-hc0"/>
+                            <constraint firstItem="2BA-Sr-TJS" firstAttribute="trailing" secondItem="Jgf-uc-7Su" secondAttribute="trailing" id="diS-fa-yq2"/>
+                            <constraint firstItem="Jgf-uc-7Su" firstAttribute="centerX" secondItem="2s7-Xw-a54" secondAttribute="centerX" id="iMi-oP-Qsr"/>
+                            <constraint firstItem="2BA-Sr-TJS" firstAttribute="bottom" secondItem="Jgf-uc-7Su" secondAttribute="bottom" id="qdp-ya-qhY"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="NG0-J1-6wb"/>
+                                <exclude reference="iMi-oP-Qsr"/>
+                                <exclude reference="DNW-Oe-uBl"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="Jgf-uc-7Su" id="LGO-Vm-ZVc"/>
@@ -39,4 +87,7 @@
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="cogs" width="25" height="23"/>
+    </resources>
 </document>
